@@ -31,5 +31,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::prefix('admin')->group(function() {
-    Route::get('/dashboard', [App\Http\Controllers\Controller::class, 'index']);
+    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
 });
