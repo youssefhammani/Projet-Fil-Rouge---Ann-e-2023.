@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('gallery', 'home.front')->name('home');
 });
 
+// Route::get('admin/dashboard', function () {
+//     return view('admin.dashboard');
+// });
+
 Route::prefix('admin')->group(function() {
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('add-category', [CategoryController::class, 'create']);
+    Route::post('add-category', [CategoryController::class, 'store']);
+
 });

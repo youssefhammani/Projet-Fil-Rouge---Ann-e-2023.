@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\category;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorecategoryRequest;
 use App\Http\Requests\UpdatecategoryRequest;
-use App\Models\category;
 
 class CategoryController extends Controller
 {
@@ -22,7 +23,7 @@ class CategoryController extends Controller
         Category::chunk(100, function ($chunk) use ($categories) {
             $categories = $categories->concat($chunk); // append the retrieved chunk of categories to the collection
         });
-        return view('categories.index', ['categories' => $categories]); // pass the collection of categories to the view
+        return view('admin.category.index', ['categories' => $categories]); // pass the collection of categories to the view
     }
 
     /**
@@ -32,7 +33,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('categories.create');
+        return view('admin.category.create');
     }
 
     /**
@@ -43,18 +44,33 @@ class CategoryController extends Controller
      */
     public function store(StorecategoryRequest $request)
     {
-        //
+        // $user = Auth::user();
+        $category = Category::create([
+            'name' => $request->input('name'),
+            'user_id' => Auth::id(),
+        ]);
+        // $category = Category::create($request->all() + ['user_id' => $user->id]);
+        
+        if ($category) {
+            return redirect()->route('category.index')
+                    ->with('success', 'Category created successfully.');
+        } else {
+            return back()->withErrors([
+                'error' => 'Failed to create category.'
+            ]);
+        }
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource.  
      *
      * @param  \App\Models\category  $category
      * @return \Illuminate\Http\Response
      */
     public function show(category $category)
     {
-        //
+        return view('categories.show', compact('category'));
+
     }
 
     /**
@@ -65,7 +81,7 @@ class CategoryController extends Controller
      */
     public function edit(category $category)
     {
-        //
+        return view('category.edit', compact('category'));
     }
 
     /**
@@ -77,7 +93,19 @@ class CategoryController extends Controller
      */
     public function update(UpdatecategoryRequest $request, category $category)
     {
-        //
+        $category->update($request->validated());
+        
+        if ($category->wasChanged()) {
+            // return redirect()->back()->with('success', 'Category updated successfully');
+            return redirect()->route('category.index')
+                    ->with('success', 'Category updated successfully');
+        } else {
+            // return redirect()->back()->with('error', 'No changes were made to the category');
+            return back()->withErrors([
+                'error' => 'Category not found.'
+            ]);
+
+        }
     }
 
     /**
@@ -88,6 +116,15 @@ class CategoryController extends Controller
      */
     public function destroy(category $category)
     {
-        //
+        $category->update(['deleted' => true]);
+        
+        if ($category->deleted) {
+            return redirect()->route('category.index')
+                    ->with('success', 'Category soft deleted successfully.');
+        } else {
+            return back()->withErrors([
+                'error' => 'Failed to soft delete category.'
+            ]);
+        }
     }
 }
