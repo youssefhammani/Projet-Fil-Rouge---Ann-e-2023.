@@ -20,10 +20,10 @@ class CategoryController extends Controller
         // return view('categories.index', compact('categories'));
 
         $categories = collect(); // create an empty collection to store categories
-        Category::chunk(100, function ($chunk) use ($categories) {
+        Category::whereNull('deleted_at')->chunk(100, function ($chunk) use ($categories) {
             $categories = $categories->concat($chunk); // append the retrieved chunk of categories to the collection
         });
-        return view('admin.category.index', ['categories' => $categories]); // pass the collection of categories to the view
+        return view('admin.categories.index', ['categories' => $categories]); // pass the collection of categories to the view
     }
 
     /**
@@ -33,7 +33,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.category.create');
+        return view('admin.categories.create');
     }
 
     /**
@@ -52,7 +52,7 @@ class CategoryController extends Controller
         // $category = Category::create($request->all() + ['user_id' => $user->id]);
         
         if ($category) {
-            return redirect()->route('category.index')
+            return redirect()->route('categories.index')
                     ->with('success', 'Category created successfully.');
         } else {
             return back()->withErrors([
@@ -81,7 +81,7 @@ class CategoryController extends Controller
      */
     public function edit(category $category)
     {
-        return view('category.edit', compact('category'));
+        return view('admin.categories.edit', compact('category'));
     }
 
     /**
@@ -97,7 +97,7 @@ class CategoryController extends Controller
         
         if ($category->wasChanged()) {
             // return redirect()->back()->with('success', 'Category updated successfully');
-            return redirect()->route('category.index')
+            return redirect()->route('categories.index')
                     ->with('success', 'Category updated successfully');
         } else {
             // return redirect()->back()->with('error', 'No changes were made to the category');
@@ -116,10 +116,10 @@ class CategoryController extends Controller
      */
     public function destroy(category $category)
     {
-        $category->update(['deleted' => true]);
+        $category->delete();
         
-        if ($category->deleted) {
-            return redirect()->route('category.index')
+        if ($category->trashed()) {
+            return redirect()->route('categories.index')
                     ->with('success', 'Category soft deleted successfully.');
         } else {
             return back()->withErrors([

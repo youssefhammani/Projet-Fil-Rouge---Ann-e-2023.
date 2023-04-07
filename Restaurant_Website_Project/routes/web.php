@@ -35,10 +35,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
 //     return view('admin.dashboard');
 // });
 
-Route::prefix('admin')->group(function() {
-    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
-    Route::get('/categories', [CategoryController::class, 'index']);
-    Route::get('add-category', [CategoryController::class, 'create']);
-    Route::post('add-category', [CategoryController::class, 'store']);
+// Route::prefix('admin')->group(function() {
+//     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
+//     Route::get('/categories', [CategoryController::class, 'index']);
+//     Route::get('add-category', [CategoryController::class, 'create']);
+//     Route::post('add-category', [CategoryController::class, 'store']);
+//     Route::get('edit-category/{category_id}', [CategoryController::class, 'edit']);
+//     Route::put('update-category/{category_id}', [CategoryController::class, 'update']);
+//     Route::get('delete-category/{category_id}', [CategoryController::class, 'destroy']);
 
+// });
+
+
+Route::group(['prefix' => 'admin/categories', 'controller' => CategoryController::class], function () {
+    Route::get('/', 'index');
+    Route::get('create', 'create');
+    Route::post('/', 'store');
+    Route::get('{id}/edit', 'edit');
+    Route::put('{id}', 'update');
+    Route::delete('{id}', 'destroy')->name('destroy');
+});
+
+Route::group(['prefix' => 'admin/products', 'controller' => ProductController::class], function () {
+    Route::get('/', 'index');
+    Route::get('create', 'create');
+    Route::post('/', 'store');
+    Route::get('{id}/edit', 'edit');
+    Route::put('{id}', 'update');
+    Route::delete('{id}', 'destroy')->name('destroy');
 });
