@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
 /*
@@ -31,9 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('gallery', 'home.front')->name('home');
 });
 
-// Route::get('admin/dashboard', function () {
-//     return view('admin.dashboard');
-// });
+Route::get('admin/dashboard', function () {
+    return view('admin.dashboard');
+});
 
 // Route::prefix('admin')->group(function() {
 //     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
@@ -47,13 +48,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // });
 
 
-Route::group(['prefix' => 'admin/categories', 'controller' => CategoryController::class], function () {
-    Route::get('/', 'index');
+// Route::post('Cat',[CategoryController::class,'store'])->name('catt');
+Route::group(['prefix' => 'admin/categories', 'as' => 'admin.categories.', 'controller' => CategoryController::class], function () {
+    Route::get('/', 'index')->name('index');
     Route::get('create', 'create');
     Route::post('/', 'store');
     Route::get('{id}/edit', 'edit');
     Route::put('{id}', 'update');
-    Route::delete('{id}', 'destroy')->name('destroy');
+    // Route::delete('{id}', 'destroy')->name('destroy');
+    Route::get('{id}', 'destroy');
 });
 
 Route::group(['prefix' => 'admin/products', 'controller' => ProductController::class], function () {
@@ -62,5 +65,5 @@ Route::group(['prefix' => 'admin/products', 'controller' => ProductController::c
     Route::post('/', 'store');
     Route::get('{id}/edit', 'edit');
     Route::put('{id}', 'update');
-    Route::delete('{id}', 'destroy')->name('destroy');
+    Route::delete('{id}', 'destroy');
 });

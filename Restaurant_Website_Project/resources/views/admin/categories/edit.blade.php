@@ -8,7 +8,9 @@
 
     <div class="card mt-4">
         <div class="card-header">
-            <h4 class="">Edit Category</h4>
+            <h4 class="">Edit Category
+                <a href="{{ url('admin/categories') }}" class="btn btn-primary btn-sm float-end">Back</a>
+            </h4>
         </div>
         <div class="card-body">
 
@@ -21,13 +23,13 @@
                 
             @endif
 
-            <form action="{{ url('admin/update-category/'.$category->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url('admin/categories/'.$category->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
                 <div class="mb-3">
                     <label for="">Name</label>
-                    <input type="text" name="name" value="{{ $category->name }}" class="form-control">
+                    <input type="text" name="name" value="{{ $category->category }}" class="form-control">
                 </div>
 
                 <div class="col-md-6">

@@ -6,6 +6,8 @@ use App\Models\category;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorecategoryRequest;
 use App\Http\Requests\UpdatecategoryRequest;
+use Illuminate\Support\Facades\Validator;
+
 
 class CategoryController extends Controller
 {
@@ -16,14 +18,14 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // $categories = Category::all();
-        // return view('categories.index', compact('categories'));
+        $categories = Category::whereNull('deleted_at')->get();
+        return view('admin.categories.index', compact('categories'));
 
-        $categories = collect(); // create an empty collection to store categories
-        Category::whereNull('deleted_at')->chunk(100, function ($chunk) use ($categories) {
-            $categories = $categories->concat($chunk); // append the retrieved chunk of categories to the collection
-        });
-        return view('admin.categories.index', ['categories' => $categories]); // pass the collection of categories to the view
+        // $categories = collect();
+        // Category::whereNull('deleted_at')->chunk(100, function ($chunk) use ($categories) {
+        //     $categories = $categories->concat($chunk);
+        // });
+        // return view('admin.categories.index', ['categories' => $categories]);
     }
 
     /**
@@ -44,15 +46,15 @@ class CategoryController extends Controller
      */
     public function store(StorecategoryRequest $request)
     {
+        // dd($request);
         // $user = Auth::user();
         $category = Category::create([
-            'name' => $request->input('name'),
+            'category' => $request->name,
             'user_id' => Auth::id(),
         ]);
-        // $category = Category::create($request->all() + ['user_id' => $user->id]);
         
         if ($category) {
-            return redirect()->route('categories.index')
+            return back()
                     ->with('success', 'Category created successfully.');
         } else {
             return back()->withErrors([
@@ -79,8 +81,9 @@ class CategoryController extends Controller
      * @param  \App\Models\category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit(category $category)
+    public function edit($id)
     {
+        $category = Category::where('id', $id)->whereNull('deleted_at')->firstOrFail();
         return view('admin.categories.edit', compact('category'));
     }
 
@@ -91,20 +94,26 @@ class CategoryController extends Controller
      * @param  \App\Models\category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatecategoryRequest $request, category $category)
+    public function update(UpdatecategoryRequest $request, $id)
     {
-        $category->update($request->validated());
+        $category = Category::where('id', $id)->whereNull('deleted_at')->firstOrFail();
         
-        if ($category->wasChanged()) {
-            // return redirect()->back()->with('success', 'Category updated successfully');
-            return redirect()->route('categories.index')
-                    ->with('success', 'Category updated successfully');
-        } else {
-            // return redirect()->back()->with('error', 'No changes were made to the category');
+        if (!$category) {
             return back()->withErrors([
                 'error' => 'Category not found.'
             ]);
-
+        }
+        
+        $category->update([
+            'category' => $request->name,
+            'user_id' => Auth::id(),
+        ]);
+        
+        if ($category->wasChanged()) {
+            return redirect()->route('admin.categories.index')
+                    ->with('success', 'Category updated successfully');
+        } else {
+            return back()->with('error', 'No changes were made to the category');
         }
     }
 
@@ -114,12 +123,13 @@ class CategoryController extends Controller
      * @param  \App\Models\category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(category $category)
+    public function destroy($id)
     {
+        $category = Category::where('id', $id)->whereNull('deleted_at')->firstOrFail();
         $category->delete();
         
         if ($category->trashed()) {
-            return redirect()->route('categories.index')
+            return redirect()->route('admin.categories.index')
                     ->with('success', 'Category soft deleted successfully.');
         } else {
             return back()->withErrors([

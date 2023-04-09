@@ -8,7 +8,9 @@
 
     <div class="card mt-4">
         <div class="card-header">
-            <h4 class="">Add Category</h4>
+            <h4 class="">Add Category
+                <a href="{{ url('admin/categories') }}" class="btn btn-primary btn-sm float-end">Back</a>
+            </h4>
         </div>
         <div class="card-body">
 
@@ -21,7 +23,7 @@
                 
             @endif
 
-            <form action="{{ url('admin/add-category') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url('admin/categories') }}" method="POST">
                 @csrf
 
                 <div class="mb-3">

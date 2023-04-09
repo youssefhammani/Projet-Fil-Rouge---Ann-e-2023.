@@ -4,36 +4,64 @@
 
 @section('content')
 
-<form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" name="name" value="{{ $product->name }}">
-    </div>
-    <div class="form-group">
-        <label for="description">Description</label>
-        <textarea class="form-control" id="description" name="description">{{ $product->description }}</textarea>
-    </div>
-    <div class="form-group">
-        <label for="price">Price</label>
-        <input type="number" class="form-control" id="price" name="price" step="0.01" value="{{ $product->price }}">
-    </div>
-    <div class="form-group">
-        <label for="image">Image</label>
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" id="image" name="image">
-            <label class="custom-file-label" for="image">Choose file</label>
+<div class="container-fluid px-4">
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4 class="">Add Product</h4>
         </div>
-        @if ($product->image)
-        <img src="{{ asset('uploads/products/' . $product->image) }}" alt="{{ $product->name }}" class="img-thumbnail mt-3" style="max-width: 200px;">
-        @endif
+        <div class="card-body">
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    @foreach ($errors->all(); as $error)
+                       <div>{{ $error }}</div> 
+                    @endforeach
+                </div>
+                
+            @endif
+
+            <form action="{{ url('admin/products') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <div class="mb-3">
+                    <label for="name">Product Name</label>
+                    <input type="text" name="name" id="name" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description">Product Description</label>
+                    <textarea name="description" id="description" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price">Product Price</label>
+                    <input type="number" name="price" id="price" class="form-control" step="0.01" min="0" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="image">Product Image</label>
+                    <input type="file" name="image" id="image" class="form-control" >
+                </div>
+
+                <div class="mb-3">
+                    <label for="category">Product Category</label>
+                    <select name="category" id="category" class="form-control" required>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->category }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-primary">Create Product</button>
+                </div>
+
+            </form>
+
+        </div>
     </div>
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="remove_image" name="remove_image">
-        <label class="form-check-label" for="remove_image">Remove image</label>
-    </div>
-    <button type="submit" class="btn btn-primary">Update</button>
-</form>
+
+</div>
 
 @endsection

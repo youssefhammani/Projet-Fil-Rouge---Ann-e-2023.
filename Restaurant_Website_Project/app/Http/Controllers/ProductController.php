@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\category;
 use App\Models\product;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreproductRequest;
@@ -16,11 +17,14 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = collect();
-        Product::chunk(100, function ($chunk) use ($products) {
-            $products = $products->concat($chunk);
-        });
-        return view('products.index', ['products' => $products]);
+        $categories = Product::whereNull('deleted_at')->get();
+        return view('admin.products.index', compact('categories'));
+
+        // $products = collect();
+        // Product::chunk(100, function ($chunk) use ($products) {
+        //     $products = $products->concat($chunk);
+        // });
+        // return view('admin.products.index', ['products' => $products]);
     }
 
     /**
@@ -30,7 +34,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('admin.products.create');
+        $categories = Category::all();
+        return view('admin.products.create', compact('categories'));
     }
 
     /**
@@ -41,7 +46,8 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-        $product = Product::create($request->except('image_url') + ['user_id' => Auth::id()]);
+        dd($request);
+        $product = Product::create($request->except('image') + ['user_id' => Auth::id()]);
         
         if ($request->hasFile('image')) {
             // upload the new image
