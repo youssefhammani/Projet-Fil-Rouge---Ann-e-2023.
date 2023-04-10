@@ -37,10 +37,10 @@
                         <td>{{ $product->description }}</td>
                         <td>{{ $product->price }}</td>
                         <td><img src="{{ asset('images/products/'.$product->image) }}" alt="{{ $product->name }}" height="50"></td>
-                        <td>{{ $product->category->name }}</td>
+                        <td>{{ $product->categories->category }}</td>
                         <td>
-                            <a href="{{ url('admin/edit-product/'.$product->id) }}" class="btn btn-outline-primary">Edit</a>
-                            <a href="{{ url('admin/delete-product/'.$product->id) }}" class="btn btn-outline-danger">Delete</a>
+                            <a href="{{ url('admin/products'.$product->id.'/edit') }}" class="btn btn-outline-primary">Edit</a>
+                            <a href="{{ url('admin/products/'.$product->id) }}" class="btn btn-outline-danger">Delete</a>
                         </td>
                     </tr>
                     @endforeach

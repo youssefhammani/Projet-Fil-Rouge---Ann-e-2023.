@@ -59,8 +59,8 @@ Route::group(['prefix' => 'admin/categories', 'as' => 'admin.categories.', 'cont
     Route::get('{id}', 'destroy');
 });
 
-Route::group(['prefix' => 'admin/products', 'controller' => ProductController::class], function () {
-    Route::get('/', 'index');
+Route::group(['prefix' => 'admin/products', 'as' => 'admin.products.', 'controller' => ProductController::class], function () {
+    Route::get('/', 'index')->name('index');
     Route::get('create', 'create');
     Route::post('/', 'store');
     Route::get('{id}/edit', 'edit');

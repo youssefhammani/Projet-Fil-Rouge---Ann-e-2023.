@@ -17,8 +17,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $categories = Product::whereNull('deleted_at')->get();
-        return view('admin.products.index', compact('categories'));
+        $products = Product::whereNull('deleted_at')->get();
+        $categories = Category::all();
+        dd($products);
+        return view('admin.products.index', compact('products', 'categories'));
 
         // $products = collect();
         // Product::chunk(100, function ($chunk) use ($products) {
@@ -46,22 +48,55 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-        dd($request);
-        $product = Product::create($request->except('image') + ['user_id' => Auth::id()]);
+        // $product = Product::create($request->except('image') + ['user_id' => Auth::id()]);
+        // dd($request);
         
+        // if ($request->hasFile('image')) {
+        //     // upload the new image
+        //     $image = $request->file('image');
+        //     $filename = time() . '_' . $image->getClientOriginalName();
+        //     $image->move(public_path('uploads/products'), $filename);
+        //     $product->image = $filename;
+            
+        //     // update the image URL
+        //     $product->image_url = asset('uploads/products/' . $filename);
+        // }
+
+        $product = new Product();
+        $product->name = $request->input('name');
+        $product->description = $request->input('description');
+        $product->price = $request->input('price');
+        $product->category_id = $request->input('category');
+        $product->user_id = Auth::id();
+
         if ($request->hasFile('image')) {
+            
+            // if a new image was uploaded, delete the old one first
+            if ($product->image_url && file_exists(public_path('uploads/products/' . $product->image_url))) {
+                unlink(public_path('uploads/products/' . $product->image));
+            }
             // upload the new image
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
             $image->move(public_path('uploads/products'), $filename);
-            $product->image = $filename;
-            
-            // update the image URL
+            $product->image_url = $filename;
+
             $product->image_url = asset('uploads/products/' . $filename);
+        } 
+        
+        else {
+            // if remove image checkbox was checked, delete the old image
+            // if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {
+            //     unlink(public_path('uploads/products/' . $product->image));
+            // }
+            
+            $product->image_url = null;
         }
+
+        // $product->save();
         
         if ($product->save()) {
-            return redirect()->route('products.index')
+            return redirect()->route('admin.products.index')
                     ->with('success', 'Product created successfully.');
         } else {
             return back()->withErrors([
