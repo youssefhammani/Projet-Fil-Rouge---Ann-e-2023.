@@ -65,5 +65,5 @@ Route::group(['prefix' => 'admin/products', 'as' => 'admin.products.', 'controll
     Route::post('/', 'store');
     Route::get('{id}/edit', 'edit');
     Route::put('{id}', 'update');
-    Route::delete('{id}', 'destroy');
+    Route::get('{id}', 'destroy');
 });

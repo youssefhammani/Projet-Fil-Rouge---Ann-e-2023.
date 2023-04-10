@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\category;
 use App\Models\product;
+use App\Models\category;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
@@ -17,16 +18,14 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::whereNull('deleted_at')->get();
-        $categories = Category::all();
-        dd($products);
-        return view('admin.products.index', compact('products', 'categories'));
-
-        // $products = collect();
-        // Product::chunk(100, function ($chunk) use ($products) {
-        //     $products = $products->concat($chunk);
-        // });
-        // return view('admin.products.index', ['products' => $products]);
+        $products = DB::table('products')
+        ->join('categories', 'products.category_id', '=', 'categories.id')
+        ->join('users', 'products.user_id', '=', 'users.id')
+        ->selectRaw('products.*, categories.category, users.name as user_name')
+        ->whereNull('products.deleted_at')
+        ->get();
+        
+        return view('admin.products.index', compact('products'));
     }
 
     /**
@@ -48,53 +47,17 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-        // $product = Product::create($request->except('image') + ['user_id' => Auth::id()]);
-        // dd($request);
-        
-        // if ($request->hasFile('image')) {
-        //     // upload the new image
-        //     $image = $request->file('image');
-        //     $filename = time() . '_' . $image->getClientOriginalName();
-        //     $image->move(public_path('uploads/products'), $filename);
-        //     $product->image = $filename;
-            
-        //     // update the image URL
-        //     $product->image_url = asset('uploads/products/' . $filename);
-        // }
-
-        $product = new Product();
-        $product->name = $request->input('name');
-        $product->description = $request->input('description');
-        $product->price = $request->input('price');
-        $product->category_id = $request->input('category');
+        $product = new Product($request->only(['name', 'description', 'price']));
+        $product->category_id = $request->input('category'); // set the category_id attribute
         $product->user_id = Auth::id();
-
+           
         if ($request->hasFile('image')) {
-            
-            // if a new image was uploaded, delete the old one first
-            if ($product->image_url && file_exists(public_path('uploads/products/' . $product->image_url))) {
-                unlink(public_path('uploads/products/' . $product->image));
-            }
-            // upload the new image
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
             $image->move(public_path('uploads/products'), $filename);
-            $product->image_url = $filename;
-
-            $product->image_url = asset('uploads/products/' . $filename);
-        } 
-        
-        else {
-            // if remove image checkbox was checked, delete the old image
-            // if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {
-            //     unlink(public_path('uploads/products/' . $product->image));
-            // }
-            
-            $product->image_url = null;
+            $product->setAttribute('image_url', asset('uploads/products/' . $filename));
         }
 
-        // $product->save();
-        
         if ($product->save()) {
             return redirect()->route('admin.products.index')
                     ->with('success', 'Product created successfully.');
@@ -122,9 +85,16 @@ class ProductController extends Controller
      * @param  \App\Models\product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(product $product)
+    public function edit($id)
     {
-        return view('admin.products.edit', compact('product'));
+        $product = Product::join('categories', 'products.category_id', '=', 'categories.id')
+        ->selectRaw('products.*, categories.category')
+        ->whereNull('products.deleted_at')
+        ->find($id);
+
+        $categories = Category::pluck('category', 'id')->all();
+        
+        return view('admin.products.edit', compact('product', 'categories'));
     }
 
     /**
@@ -134,37 +104,37 @@ class ProductController extends Controller
      * @param  \App\Models\product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateproductRequest $request, product $product)
+    public function update(UpdateproductRequest $request, $id)
     {
-        $product->update($request->except('image_url'));
-        
+        $product = Product::where('id', $id)->whereNull('deleted_at')->first();
+        if (!$product) {
+            return back()->withErrors([
+                'error' => 'Product not found or has been deleted.'
+            ]);
+        }
+
+        $product->fill($request->only(['name', 'description', 'price', 'category']));
+        $product->user_id = Auth::id();
+
         if ($request->hasFile('image')) {
-            
             // if a new image was uploaded, delete the old one first
-            if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {
+            if ($product->image_url && file_exists(public_path('uploads/products/' . $product->image_url))) {
                 unlink(public_path('uploads/products/' . $product->image));
             }
             // upload the new image
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
             $image->move(public_path('uploads/products'), $filename);
-            $product->image = $filename;
+            // $product->image_url = $filename;
 
-            // $product->image_url = asset('uploads/products/' . $filename);
-        } 
-        
-        elseif ($request->has('remove_image')) {
-            // if remove image checkbox was checked, delete the old image
-            if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {
-                unlink(public_path('uploads/products/' . $product->image));
-            }
-            
-            $product->image = null;
+            $product->image_url = asset('uploads/products/' . $filename);
+        } else {
+            $product->image_url = "null.jpg";
         }
-        
-        if ($product->save()) {
-            return redirect()->route('products.index')
-                    ->with('success', 'Product updated successfully.');
+
+        if ($product->update()) {
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Product updated successfully.');
         } else {
             return back()->withErrors([
                 'error' => 'Failed to update product.'
@@ -178,8 +148,18 @@ class ProductController extends Controller
      * @param  \App\Models\product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(product $product)
+    public function destroy($id)
     {
-        //
+        $product = Product::where('id', $id)->whereNull('deleted_at')->first();
+        $product->delete();
+        
+        if ($product->trashed()) {
+            return redirect()->route('admin.products.index')
+                    ->with('success', 'Product deleted successfully.');
+        } else {
+            return back()->withErrors([
+                'error' => 'Product not found or already deleted.'
+            ]);
+        }
     }
 }

@@ -13,14 +13,15 @@
         </div>
         <div class="card-body">
             
-            @if (session('message'))
-                <div class="alert alert-success">{{ session('message') }}</div>
+            @if (session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
             @endif
     
             <table id="myTable" class="table table-bordered">
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Product added by</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Price</th>
@@ -33,13 +34,14 @@
                     @foreach ($products as $product)
                     <tr>
                         <td>{{ $product->id }}</td>
+                        <td>{{ $product->user_name }}</td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->description }}</td>
                         <td>{{ $product->price }}</td>
-                        <td><img src="{{ asset('images/products/'.$product->image) }}" alt="{{ $product->name }}" height="50"></td>
-                        <td>{{ $product->categories->category }}</td>
+                        <td><img src="{{ asset('uploads/products/'.$product->image_url) }}" alt="{{ $product->name }}" height="50"></td>
+                        <td>{{ $product->category }}</td>
                         <td>
-                            <a href="{{ url('admin/products'.$product->id.'/edit') }}" class="btn btn-outline-primary">Edit</a>
+                            <a href="{{ url('admin/products/'.$product->id.'/edit') }}" class="btn btn-outline-primary">Edit</a>
                             <a href="{{ url('admin/products/'.$product->id) }}" class="btn btn-outline-danger">Delete</a>
                         </td>
                     </tr>

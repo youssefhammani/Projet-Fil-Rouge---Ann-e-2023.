@@ -96,8 +96,7 @@ class CategoryController extends Controller
      */
     public function update(UpdatecategoryRequest $request, $id)
     {
-        $category = Category::where('id', $id)->whereNull('deleted_at')->firstOrFail();
-        
+        $category = Category::where('id', $id)->whereNull('deleted_at')->firstOrFail();        
         if (!$category) {
             return back()->withErrors([
                 'error' => 'Category not found.'

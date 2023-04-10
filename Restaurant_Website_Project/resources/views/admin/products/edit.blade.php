@@ -42,16 +42,16 @@
                 <div class="mb-3">
                     <label for="image">Product Image</label>
                     <input type="file" name="image" id="image" class="form-control">
-                    <img src="{{ asset('images/'.$product->image) }}" alt="{{ $product->name }}" class="img-thumbnail mt-2" style="max-width: 200px;">
+                    <img src="{{ asset('uploads/products'.$product->image_url) }}" alt="{{ $product->name }}" class="img-thumbnail mt-2" style="max-width: 200px;">
                 </div>
     
                 <div class="mb-3">
                     <label for="category">Product Category</label>
                     <select name="category" id="category" class="form-control" required>
-                        {{-- @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ ($category->id == $product->category_id) ? 'selected' : '' }}>{{ $category->name }}</option>
-                        @endforeach --}}
-                    </select>
+                        @foreach($categories as $categoryId => $categoryName)
+                            <option value="{{ $categoryId }}" {{ ($categoryId == $product->category_id) ? 'selected' : '' }}>{{ $categoryName }}</option>
+                        @endforeach
+                    </select>                    
                 </div>
     
                 <div class="col-md-6">
