@@ -23,9 +23,9 @@ class product extends Model
         // '_token', // add _token to the fillable array
     ];
 
-    // protected $attributes = [
-    //     'image_url' => 'default-image.jpg',
-    // ];    
+    protected $attributes = [
+        'image_url' => 'default-image.jpg',
+    ];    
 
     public function category(): BelongsTo
     {

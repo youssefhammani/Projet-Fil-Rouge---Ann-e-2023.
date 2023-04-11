@@ -7,7 +7,9 @@
 <div class="container-fluid px-4">
     <div class="card mt-4">
         <div class="card-header">
-            <h4 class="">Edit Product</h4>
+            <h4 class="">Edit Product
+                <a href="{{ url('admin/products') }}" class="btn btn-primary btn-sm float-end">Back</a>
+            </h4>
         </div>
         <div class="card-body">
     

@@ -39,6 +39,14 @@ class ProductController extends Controller
         return view('admin.products.create', compact('categories'));
     }
 
+    public function getProducts()
+    {
+        $products = $this->index();
+        $categories = $this->create();
+
+        return view('home.menu', compact('products', 'categories'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -53,9 +61,14 @@ class ProductController extends Controller
            
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('uploads/products'), $filename);
-            $product->setAttribute('image_url', asset('uploads/products/' . $filename));
+            $filename = time() . '_' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/images/products/'), $filename);
+            // $product->setAttribute('image_url', asset('uploads/images/products/' . $filename));
+            $product->image_url = $filename;
+        } else {
+            // get the default value from the $attributes array
+            $defaultImageUrl = $product->getAttributes()['image_url'];
+            $product->image_url = $defaultImageUrl;
         }
 
         if ($product->save()) {
@@ -118,18 +131,19 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             // if a new image was uploaded, delete the old one first
-            if ($product->image_url && file_exists(public_path('uploads/products/' . $product->image_url))) {
-                unlink(public_path('uploads/products/' . $product->image));
+            if ($product->image_url && file_exists(public_path('uploads/images/products/' . $product->image_url))) {
+                unlink(public_path('uploads/images/products/' . $product->image));
             }
             // upload the new image
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('uploads/products'), $filename);
-            // $product->image_url = $filename;
+            $image->move(public_path('uploads/images/products'), $filename);
+            $product->image_url = $filename;
 
-            $product->image_url = asset('uploads/products/' . $filename);
+            // $product->image_url = asset('uploads/images/products/' . $filename);
         } else {
-            $product->image_url = "null.jpg";
+            $defaultImageUrl = $product->getAttributes()['image_url'];
+            $product->image_url = $defaultImageUrl;
         }
 
         if ($product->update()) {

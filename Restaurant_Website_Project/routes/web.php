@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,3 +69,18 @@ Route::group(['prefix' => 'admin/products', 'as' => 'admin.products.', 'controll
     Route::put('{id}', 'update');
     Route::get('{id}', 'destroy');
 });
+
+Route::group(['prefix' => 'admin/events', 'controller' => EventController::class], function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('create', 'create')->name('create');
+    Route::post('/', 'store')->name('store');
+    Route::get('{id}/edit', 'edit')->name('edit');
+    Route::put('{id}', 'update')->name('update');
+    Route::get('{id}', 'destroy')->name('delete');
+});
+
+Route::group(['prefix' => 'admin/users', 'controller' => DashboardController::class], function () {
+    Route::get('/', 'getUsers')->name('users.get');
+    Route::get('{id}/edit', 'editUsers');
+});
+

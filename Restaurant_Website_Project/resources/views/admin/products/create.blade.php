@@ -8,7 +8,9 @@
 
     <div class="card mt-4">
         <div class="card-header">
-            <h4 class="">Add Product</h4>
+            <h4 class="">Add Product
+                <a href="{{ url('admin/products') }}" class="btn btn-primary btn-sm float-end">Back</a>
+            </h4>
         </div>
         <div class="card-body">
 
@@ -26,17 +28,17 @@
 
                 <div class="mb-3">
                     <label for="name">Product Name</label>
-                    <input type="text" name="name" id="name" class="form-control" required>
+                    <input type="text" name="name" id="name" class="form-control" >
                 </div>
 
                 <div class="mb-3">
                     <label for="description">Product Description</label>
-                    <textarea name="description" id="description" class="form-control" rows="3" required></textarea>
+                    <textarea name="description" id="description" class="form-control" rows="3" ></textarea>
                 </div>
 
                 <div class="mb-3">
                     <label for="price">Product Price</label>
-                    <input type="number" name="price" id="price" class="form-control" step="0.01" min="0" required>
+                    <input type="number" name="price" id="price" class="form-control" step="0.01" min="0" >
                 </div>
 
                 <div class="mb-3">
@@ -46,7 +48,7 @@
 
                 <div class="mb-3">
                     <label for="category">Product Category</label>
-                    <select name="category" id="category" class="form-control" required>
+                    <select name="category" id="category" class="form-control" >
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->category }}</option>
                         @endforeach

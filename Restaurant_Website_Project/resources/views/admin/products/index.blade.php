@@ -7,7 +7,7 @@
 <div class="container-fluid px-4">
     <div class="card mt-4">
         <div class="card-header">
-            <h4>View Products
+            <h4>All Products
                 <a href="{{ url('admin/products/create') }}" class="btn btn-primary btn-sm float-end">Add Product</a>
             </h4>
         </div>
@@ -38,7 +38,7 @@
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->description }}</td>
                         <td>{{ $product->price }}</td>
-                        <td><img src="{{ asset('uploads/products/'.$product->image_url) }}" alt="{{ $product->name }}" height="50"></td>
+                        <td><img src="{{ asset('uploads/images/products/'.$product->image_url) }}" alt="{{ $product->name }}" height="50"></td>
                         <td>{{ $product->category }}</td>
                         <td>
                             <a href="{{ url('admin/products/'.$product->id.'/edit') }}" class="btn btn-outline-primary">Edit</a>
