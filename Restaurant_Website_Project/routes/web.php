@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\TableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,3 +85,15 @@ Route::group(['prefix' => 'admin/users', 'controller' => DashboardController::cl
     Route::get('{id}/edit', 'editUsers');
 });
 
+Route::group(['prefix' => 'admin/booking', 'as' => 'booking.', 'controller' => TableController::class], function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('create', 'create')->name('create');
+    // Route::post('/', 'store')->name('store');
+    Route::get('{id}/edit', 'edit')->name('Edit');
+    Route::put('{id}', 'update')->name('Update');
+    Route::get('{id}', 'destroy')->name('Delete');
+});
+
+Route::group(['controller' => TableController::class], function () {
+    Route::post('book-a-table', 'store')->name('booking');
+});

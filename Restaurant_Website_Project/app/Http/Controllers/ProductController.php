@@ -136,7 +136,7 @@ class ProductController extends Controller
             }
             // upload the new image
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $filename = time() . '_' . $image->getClientOriginalExtension();
             $image->move(public_path('uploads/images/products'), $filename);
             $product->image_url = $filename;
 

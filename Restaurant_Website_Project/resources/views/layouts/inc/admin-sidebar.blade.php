@@ -65,8 +65,8 @@
                         </a>
                         <div class="collapse" id="pagesCollapseEvent" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="#">Add Event</a>
-                                <a class="nav-link" href="#">Show events</a>
+                                <a class="nav-link" href="{{ route('create') }}">Add Event</a>
+                                <a class="nav-link" href="{{ route('index') }}">Show events</a>
                             </nav>
                         </div>
                     </nav>
@@ -110,7 +110,7 @@
                             </nav>
                         </div> --}}
 
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ route('booking.index') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                             Reserved tables
                         </a>

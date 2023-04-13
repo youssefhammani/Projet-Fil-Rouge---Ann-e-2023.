@@ -6,21 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Event extends Model
+class Table extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'events';
+    protected $table = 'tables';
 
     protected $fillable = [
-        'title',
-        'description',
-        'event_time',
-        'start_time',
-        'end_time',
+        'name',
+        'email',
+        'phone',
+        'date',
+        'time',
         'num_of_people',
-        'event_image',
-        'price',
+        'message',
         'user_id',
     ];
 }

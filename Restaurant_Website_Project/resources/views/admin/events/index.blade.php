@@ -45,7 +45,7 @@
                         <td><img src="{{ asset('uploads/images/event/'.$event->event_image) }}" alt="{{ $event->title }}" height="50"></td>
                         {{-- <td>{{ $event->location }}</td> --}}
                         <td>
-                            <a href="{{ route('edit', $event->id) }}" class="btn btn-outline-primary">Edit</a>
+                            <a href="{{ route('edit', ['id' => $event->id]) }}" class="btn btn-outline-primary">Edit</a>
                             <a href="{{ route('delete', $event->id) }}" class="btn btn-outline-danger">Delete</a>
                         </td>
                     </tr>
