@@ -25,7 +25,8 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('home', 'home.front')->name('');
     Route::view('about', 'home.front')->name('home');
-    Route::view('menu', 'home.menu')->name('');
+    // Route::view('menu', 'home.menu')->name('');
+    Route::get('menu', [ProductController::class, 'getProducts']);
     Route::view('contact', 'home.contact')->name('');
     Route::view('events', 'home.events')->name('');
     Route::view('chefs', 'home.chefs')->name('');
@@ -87,7 +88,7 @@ Route::group(['prefix' => 'admin/users', 'controller' => DashboardController::cl
 
 Route::group(['prefix' => 'admin/booking', 'as' => 'booking.', 'controller' => TableController::class], function () {
     Route::get('/', 'index')->name('index');
-    Route::get('create', 'create')->name('create');
+    // Route::get('create', 'create')->name('create');
     // Route::post('/', 'store')->name('store');
     Route::get('{id}/edit', 'edit')->name('Edit');
     Route::put('{id}', 'update')->name('Update');
@@ -96,4 +97,9 @@ Route::group(['prefix' => 'admin/booking', 'as' => 'booking.', 'controller' => T
 
 Route::group(['controller' => TableController::class], function () {
     Route::post('book-a-table', 'store')->name('booking');
+    // Route::get('create', 'create');
+});
+
+Route::group(['controller' => ProductController::class], function () {
+    Route::get('buy/{id}', 'buying');
 });

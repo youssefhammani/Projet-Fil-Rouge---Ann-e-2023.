@@ -17,8 +17,8 @@ class TableController extends Controller
      */
     public function index()
     {
-        $data = Table::whereNull('deleted_at')->get();
-        return view('admin.table.index', compact('data'));
+        $tables = Table::whereNull('deleted_at')->get();
+        return view('admin.booking.table.index', compact('tables'));
     }
 
     /**
@@ -28,7 +28,7 @@ class TableController extends Controller
      */
     public function create()
     {
-        //
+        return view('home.book-a-table');
     }
 
     /**
@@ -71,8 +71,8 @@ class TableController extends Controller
      */
     public function edit($id)
     {
-        $data = Table::where('id', $id)->whereNull('deleted_at')->first();
-        return view('admin.table.edit', compact('data'));
+        $reservation = Table::where('id', $id)->whereNull('deleted_at')->first();
+        return view('admin.booking.table.edit', compact('reservation'));
     }
 
     /**
@@ -95,7 +95,7 @@ class TableController extends Controller
         $data->user_id = Auth::id();
 
         if ($data->save()) {
-            return redirect()->route('booking.Update')
+            return redirect()->route('booking.index')
                     ->with('success', 'This reservation for the table has been updated successfully.');
         } else {
             return back()->withErrors([

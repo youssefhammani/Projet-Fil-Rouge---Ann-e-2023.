@@ -41,10 +41,25 @@ class ProductController extends Controller
 
     public function getProducts()
     {
-        $products = $this->index();
-        $categories = $this->create();
+        // $products = $this->index();
+        // $categories = $this->create();
+        $products = DB::table('products')
+        ->join('categories', 'products.category_id', '=', 'categories.id')
+        ->join('users', 'products.user_id', '=', 'users.id')
+        ->selectRaw('products.*, categories.category, users.name as user_name')
+        ->whereNull('products.deleted_at')
+        ->get();
 
-        return view('home.menu', compact('products', 'categories'));
+        $dataCategories = Category::all();
+
+        return view('home.menu', ['Product_R' => $products, 'categories' => $dataCategories]);
+    }
+
+    public function buying($id)
+    {
+        $buy = product::where('id', $id)->whereNull('deleted_at')->first();
+
+        return view('home.buying', ['buy' => $buy]);
     }
 
     /**
