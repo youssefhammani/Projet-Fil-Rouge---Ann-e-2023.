@@ -19,12 +19,12 @@ class ProductController extends Controller
     public function index()
     {
         $products = DB::table('products')
-        ->join('categories', 'products.category_id', '=', 'categories.id')
-        ->join('users', 'products.user_id', '=', 'users.id')
-        ->selectRaw('products.*, categories.category, users.name as user_name')
-        ->whereNull('products.deleted_at')
-        ->get();
-        
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->join('users', 'products.user_id', '=', 'users.id')
+            ->selectRaw('products.*, categories.category, users.name as user_name')
+            ->whereNull('products.deleted_at')
+            ->get();
+
         return view('admin.products.index', compact('products'));
     }
 
@@ -44,22 +44,15 @@ class ProductController extends Controller
         // $products = $this->index();
         // $categories = $this->create();
         $products = DB::table('products')
-        ->join('categories', 'products.category_id', '=', 'categories.id')
-        ->join('users', 'products.user_id', '=', 'users.id')
-        ->selectRaw('products.*, categories.category, users.name as user_name')
-        ->whereNull('products.deleted_at')
-        ->get();
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->join('users', 'products.user_id', '=', 'users.id')
+            ->selectRaw('products.*, categories.category, users.name as user_name')
+            ->whereNull('products.deleted_at')
+            ->get();
 
         $dataCategories = Category::all();
 
         return view('home.menu', ['Product_R' => $products, 'categories' => $dataCategories]);
-    }
-
-    public function buying($id)
-    {
-        $buy = product::where('id', $id)->whereNull('deleted_at')->first();
-
-        return view('home.buying', ['buy' => $buy]);
     }
 
     /**
@@ -73,7 +66,7 @@ class ProductController extends Controller
         $product = new Product($request->only(['name', 'description', 'price']));
         $product->category_id = $request->input('category'); // set the category_id attribute
         $product->user_id = Auth::id();
-           
+
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalExtension();
@@ -87,11 +80,12 @@ class ProductController extends Controller
         }
 
         if ($product->save()) {
-            return redirect()->route('admin.products.index')
-                    ->with('success', 'Product created successfully.');
+            return redirect()
+                ->route('admin.products.index')
+                ->with('success', 'Product created successfully.');
         } else {
             return back()->withErrors([
-                'error' => 'Failed to create product.'
+                'error' => 'Failed to create product.',
             ]);
         }
     }
@@ -116,12 +110,12 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::join('categories', 'products.category_id', '=', 'categories.id')
-        ->selectRaw('products.*, categories.category')
-        ->whereNull('products.deleted_at')
-        ->find($id);
+            ->selectRaw('products.*, categories.category')
+            ->whereNull('products.deleted_at')
+            ->find($id);
 
         $categories = Category::pluck('category', 'id')->all();
-        
+
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
@@ -134,10 +128,12 @@ class ProductController extends Controller
      */
     public function update(UpdateproductRequest $request, $id)
     {
-        $product = Product::where('id', $id)->whereNull('deleted_at')->first();
+        $product = Product::where('id', $id)
+            ->whereNull('deleted_at')
+            ->first();
         if (!$product) {
             return back()->withErrors([
-                'error' => 'Product not found or has been deleted.'
+                'error' => 'Product not found or has been deleted.',
             ]);
         }
 
@@ -162,11 +158,12 @@ class ProductController extends Controller
         }
 
         if ($product->update()) {
-            return redirect()->route('admin.products.index')
+            return redirect()
+                ->route('admin.products.index')
                 ->with('success', 'Product updated successfully.');
         } else {
             return back()->withErrors([
-                'error' => 'Failed to update product.'
+                'error' => 'Failed to update product.',
             ]);
         }
     }
@@ -179,15 +176,18 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::where('id', $id)->whereNull('deleted_at')->first();
+        $product = Product::where('id', $id)
+            ->whereNull('deleted_at')
+            ->first();
         $product->delete();
-        
+
         if ($product->trashed()) {
-            return redirect()->route('admin.products.index')
-                    ->with('success', 'Product deleted successfully.');
+            return redirect()
+                ->route('admin.products.index')
+                ->with('success', 'Product deleted successfully.');
         } else {
             return back()->withErrors([
-                'error' => 'Product not found or already deleted.'
+                'error' => 'Product not found or already deleted.',
             ]);
         }
     }

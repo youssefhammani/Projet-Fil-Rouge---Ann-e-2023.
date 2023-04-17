@@ -1,48 +1,41 @@
 @extends('home')
 
 @section('content')
+    <section class="light">
+        <div class="container py-2">
+            <div class="h1 text-center text-dark" id="pageHeaderTitle"></div>
+            <div class="section-header">
+                <h2>Events</h2>
+                <p>Share <span>Your Moments</span> In Our Restaurant</p>
+            </div>
 
-<!-- ======= Events Section ======= -->
-<section id="events" class="events">
-    <div class="container-fluid" data-aos="fade-up">
-
-      <div class="section-header mt-5">
-        <h2>Events</h2>
-        <p>Share <span>Your Moments</span> In Our Restaurant</p>
-      </div>
-
-      <div class="slides-3 swiper" data-aos="fade-up" data-aos-delay="100">
-        <div class="swiper-wrapper">
-
-          <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(assets/img/events-1.jpg)">
-            <h3>Custom Parties</h3>
-            <div class="price align-self-start">$99</div>
-            <p class="description">
-              Quo corporis voluptas ea ad. Consectetur inventore sapiente ipsum voluptas eos omnis facere. Enim facilis veritatis id est rem repudiandae nulla expedita quas.
-            </p>
-          </div><!-- End Event item -->
-
-          <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(assets/img/events-2.jpg)">
-            <h3>Private Parties</h3>
-            <div class="price align-self-start">$289</div>
-            <p class="description">
-              In delectus sint qui et enim. Et ab repudiandae inventore quaerat doloribus. Facere nemo vero est ut dolores ea assumenda et. Delectus saepe accusamus aspernatur.
-            </p>
-          </div><!-- End Event item -->
-
-          <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(assets/img/events-3.jpg)">
-            <h3>Birthday Parties</h3>
-            <div class="price align-self-start">$499</div>
-            <p class="description">
-              Laborum aperiam atque omnis minus omnis est qui assumenda quos. Quis id sit quibusdam. Esse quisquam ducimus officia ipsum ut quibusdam maxime. Non enim perspiciatis.
-            </p>
-          </div><!-- End Event item -->
+            @foreach ($events as $event)
+                <article class="postcard light blue">
+                    <a class="postcard__img_link" href="#">
+                        <img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" />
+                    </a>
+                    <div class="postcard__text t-dark">
+                        <h1 class="postcard__title blue"><a href="#">{{ $event->title }}</a></h1>
+                        <div class="postcard__subtitle small">
+                            <time datetime="2020-05-25 12:00:00">
+                              <i class="bi bi-calendar-check"></i> {{ $event->event_time }}
+                            </time>
+                        </div>
+                        <div class="postcard__bar"></div>
+                        <div class="postcard__preview-txt">{{ $event->description }} Lorem ipsum dolor sit amet consectetur
+                            adipisicing elit. Fuga vero corporis sed consequuntur numquam, praesentium optio et, iure saepe
+                            magni impedit molestias tempore illum maiores autem, alias placeat tempora incidunt.</div>
+                        <ul class="postcard__tagbox">
+                            <li class="tag__item"><i class="bi bi-clock"></i> {{ $event->start_time }}</li>
+                            <li class="tag__item"><i class="bi bi-clock-fill"></i> {{ $event->end_time }}</li>
+                            <li class="tag__item play blue">
+                                <a href="#"><i class="bi bi-ticket-detailed"></i> Buy your ticket</a>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+            @endforeach
 
         </div>
-        <div class="swiper-pagination"></div>
-      </div>
-
-    </div>
-  </section><!-- End Events Section -->
-
+    </section>
 @endsection

@@ -26,6 +26,16 @@ class EventController extends Controller
         return view('admin.events.index', compact('events'));
     }
 
+    public function getEvents()
+    {
+        $events = DB::table('events')
+        ->select('events.*')
+        ->whereNull('events.deleted_at')
+        ->get();
+        
+        return view('home.events', compact('events')); 
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\TableController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\TableController;
+use App\Http\Controllers\StripePaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,15 +30,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('menu', [ProductController::class, 'getProducts']);
     Route::view('contact', 'home.contact')->name('');
     Route::view('events', 'home.events')->name('');
+    Route::get('events', [EventController::class, 'getEvents']);
     Route::view('chefs', 'home.chefs')->name('');
     Route::view('gallery', 'home.gallery')->name('');
     Route::view('book-a-table', 'home.book-a-table')->name('');
-    Route::view('gallery', 'home.front')->name('home');
-    Route::view('gallery', 'home.front')->name('home');
+    // Route::view('gallery', 'home.front')->name('home');
+    Route::view('test', 'home.gallery')->name('');
 });
 
 Route::get('admin/dashboard', function () {
     return view('admin.dashboard');
+});
+
+Route::get('buying', function () {
+    return view('home.buying');
 });
 
 // Route::prefix('admin')->group(function() {
@@ -100,6 +106,19 @@ Route::group(['controller' => TableController::class], function () {
     // Route::get('create', 'create');
 });
 
-Route::group(['controller' => ProductController::class], function () {
-    Route::get('buy/{id}', 'buying');
+Route::group(['controller' => DashboardController::class], function () {
+    Route::get('basket/{id}', 'AddToCart');
+    Route::get('cart', 'show');
+    // Route::get('confirmation', 'confirm')->name('stripe.post');
 });
+
+
+Route::controller(StripePaymentController::class)->group(function(){
+    Route::get('stripe', 'stripe');
+    Route::post('stripe', 'stripePost')->name('stripe.post');
+});
+
+Route::get('/Basket',[DashboardController::class,'Basket'])->name('Basket');
+
+Route::view('/oui','oui');
+Route::view('/buying1','home.buying');
