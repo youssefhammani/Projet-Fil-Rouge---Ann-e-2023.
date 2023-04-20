@@ -42,9 +42,9 @@ Route::get('admin/dashboard', function () {
     return view('admin.dashboard');
 });
 
-Route::get('buying', function () {
-    return view('home.buying');
-});
+// Route::get('buying', function () {
+//     return view('home.buying');
+// });
 
 // Route::prefix('admin')->group(function() {
 //     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
@@ -90,6 +90,9 @@ Route::group(['prefix' => 'admin/events', 'controller' => EventController::class
 Route::group(['prefix' => 'admin/users', 'controller' => DashboardController::class], function () {
     Route::get('/', 'getUsers')->name('users.get');
     Route::get('{id}/edit', 'editUsers');
+    Route::get('checkout', 'checkOut');
+    Route::get('{id}', 'deleteOreder');
+    Route::get('{id}/done', 'doneOreder');
 });
 
 Route::group(['prefix' => 'admin/booking', 'as' => 'booking.', 'controller' => TableController::class], function () {
@@ -120,5 +123,5 @@ Route::controller(StripePaymentController::class)->group(function(){
 
 Route::get('/Basket',[DashboardController::class,'Basket'])->name('Basket');
 
-Route::view('/oui','oui');
-Route::view('/buying1','home.buying');
+// Route::view('/oui','oui');
+Route::get('/buying1', [DashboardController::class, 'getOrders']);

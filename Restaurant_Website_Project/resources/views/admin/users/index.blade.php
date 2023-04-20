@@ -43,7 +43,7 @@
                         </td> --}}
                                 <td>
                                     <span
-                                        class="badge bg-success rounded-pill d-inline px-3">{{ $item->role_as == '1' ? 'Admin' : 'User' }}</span>
+                                        class="badge bg-success rounded-pill d-inline px-3">{{ $item->role == 'admin' ? 'Admin' : 'User' }}</span>
                                 </td>
                                 <td>{{ $item->created_at }}</td>
                                 <td>

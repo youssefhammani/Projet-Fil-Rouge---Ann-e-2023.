@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\orders;
 use App\Models\User;
 use App\Models\product;
 use Illuminate\Http\Request;
@@ -23,13 +24,20 @@ class DashboardController extends Controller
 
     public function addToCart($id)
     {
-        // $buy = product::where('id', $id)->whereNull('deleted_at')->first();
+        $basket = Cart::where('user_id', Auth::user()->id)->get();
+
+        foreach ($basket as $value) {
+            if ($value->product_id == $id) {
+                return back()->with('succes', 'you added');
+            }
+        }
+
         $cart = new Cart();
         $cart->user_id = Auth::user()->id;
         $cart->product_id = $id;
         $cart->save();
 
-        return redirect()->back();
+        return back()->with('succes', 'you added');
     }
 
     public function show()
@@ -67,24 +75,66 @@ class DashboardController extends Controller
     {
         // return view('stripe');
         // dd($request->all());
-        $orders = session()->get('orders', []);
-        for($i = 0; $i <= count($request->all()); $i++)
-        {
-            $ss = $request->input('product_id'.$i);
-            $ss1 = $request->input('product_qty_'.$i);
+        $yha = session()->get('orders', []);
+        for ($i = 0; $i <= count($request->all()); $i++) {
+            $ss = $request->input('product_id' . $i);
+            $ss1 = $request->input('product_qty_' . $i);
             // dd($ss1);
             // if (isset($ss1) && !empty($ss1)) {
-                $order = [
-                    'product_id' => $ss,
-                    'Quantity' => $ss1,
-                    'user_id' => Auth::user()->id,
-                    'Total' => 20,
-                ];
-                $orders[] = $order;
+            $order = [
+                'product_id' => $ss,
+                'Quantity' => $ss1,
+                'user_id' => Auth::user()->id,
+                'Total' => 20,
+            ];
+            $orders[] = $order;
             // }
         }
         // dd($orders);
         session()->put('orders', $orders);
         return view('stripe');
+    }
+
+    public function getOrders()
+    {
+        $info = orders::where('orders.user_id', Auth::user()->id)
+            ->join('users', 'users.id', '=', 'orders.user_id')
+            ->join('products', 'products.id', '=', 'orders.product_id')
+            ->get();
+
+        return view('home.buying', ['info' => $info]);
+    }
+
+    public function checkOut()
+    {
+        $info = orders::where('orders.user_id', Auth::user()->id)
+            ->join('users', 'users.id', '=', 'orders.user_id')
+            ->join('products', 'products.id', '=', 'orders.product_id')
+            ->get();
+
+        return view('admin.users.checkout', ['info' => $info]);
+    }
+
+    public function deleteOreder($id)
+    {
+        $order = orders::where('product_id', $id)->first()->delete();
+        // dd($order);
+        if ($order) {
+            return back()->with('success', 'order in deleted successfelly');
+        } else {
+            return back()->withErrors([
+                'error' => 'is not deleted',
+            ]);
+        }
+    }
+
+    public function doneOreder($id)
+    {
+        $order = orders::where('product_id', $id)->first();
+
+        $order->Status = 'true';
+        $order->save();
+
+        return back()->with('succes', 'Order Complete');
     }
 }

@@ -68,7 +68,7 @@
 
     {{-- <main id="main"> --}}
     <!-- ======= Why Us Section ======= -->
-    <section id="why-us" class="why-us section-bg">
+    {{-- <section id="why-us" class="why-us section-bg">
       <div class="container" data-aos="fade-up">
 
         <div class="row gy-4">
@@ -145,7 +145,7 @@
         </div>
 
       </div>
-    </section><!-- End Gallery Section -->
+    </section><!-- End Gallery Section --> --}}
     </main>
   
 @endsection

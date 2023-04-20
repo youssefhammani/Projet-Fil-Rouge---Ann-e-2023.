@@ -68,14 +68,8 @@ class StripePaymentController extends Controller
                     }
                 }
             }
-            // $orders = session()->get('orders');
 
-            // foreach ($orders as $order) {
-            //     dd( "Product ID: " . $order['product_id'] . ", Quantity: " . $order['Quantity'] . "<br>");
-            // }
-            // $test = new PanierController;
-            // $orders = $test->nachit1();
-            // $test->save();
+            // dd($info);
             return view('oui');
         } catch (CardException $e) {
             // Handle card errors

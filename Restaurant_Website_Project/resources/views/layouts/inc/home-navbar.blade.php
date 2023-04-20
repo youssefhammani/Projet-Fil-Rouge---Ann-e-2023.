@@ -1,4 +1,8 @@
 <!-- ======= Header ======= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
+</script>
+{{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous"> --}}
 <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
 
@@ -47,9 +51,37 @@
             </ul>
         </nav><!-- .navbar -->
 
-        <a class="btn-book-a-table" href="{{ route('login') }}">Sign In</a>
-        <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
-        <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
-
+        @if (Route::has('login'))
+            @auth
+                <div class="nav-item dropdown float-right mb-4" style="margin-top: 0.7cm">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <img class="rounded-circle me-lg-2"
+                            src="https://intranet.youcode.ma/storage/users/profile/361-1662647721.JPG" alt=""
+                            style="width: 40px; height: 40px;">
+                        <span class="d-none d-lg-inline-flex">{{ Auth::user()->name }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                        <a href="/Profile" class="dropdown-item">My Profile</a>
+                        @auth
+                            @if (auth()->user()->role == 'admin')
+                                <a href="{{ url('admin/dashboard') }}" class="dropdown-item">dashboard</a>
+                            @endif
+                        @endauth
+                        <a href="{{ url('/buying1') }}" class="dropdown-item">order tracking</a>
+                        <a href="" class="dropdown-item"
+                            onclick="event.preventDefault();
+    document.getElementById('logout-form').submit();">Log
+                            Out</a>
+                        <form id="logout-form" action="" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </div>
+                </div>
+            @else
+                <a class="btn-book-a-table" href="{{ route('login') }}">Sign In</a>
+                <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+                <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+            @endif
+        @endauth
     </div>
 </header><!-- End Header -->

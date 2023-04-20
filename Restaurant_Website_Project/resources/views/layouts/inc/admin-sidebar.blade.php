@@ -3,6 +3,10 @@
         <div class="sb-sidenav-menu">
             <div class="nav">
                 <div class="sb-sidenav-menu-heading">Core</div>
+                <a class="nav-link" href="{{ url('home') }}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    Home
+                </a>
                 <a class="nav-link" href="{{ url('admin/dashboard') }}">
                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                     Dashboard
@@ -115,10 +119,10 @@
                             Reserved tables
                         </a>
 
-                        <a class="nav-link" href="#">
+                        {{-- <a class="nav-link" href="#">
                             <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                             Booked events
-                        </a>
+                        </a> --}}
                     </nav>
                 </div>
 
@@ -127,6 +131,12 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                     Users
                 </a>
+
+                <a class="nav-link" href="{{ url('admin/users/checkout') }}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                    Orders
+                </a>
+                
                 <a class="nav-link" href="#">
                     <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                     Admin
