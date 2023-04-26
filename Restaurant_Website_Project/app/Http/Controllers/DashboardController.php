@@ -22,6 +22,15 @@ class DashboardController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
+    public  function userInfo($id)
+    {
+        // $info = User::where('id', $id)->first();
+        $info = User::where('id','=', $id)->get();
+        // dd($info);
+
+        return view('home.profile', compact('info'));
+    }
+
     public function addToCart($id)
     {
         $basket = Cart::where('user_id', Auth::user()->id)->get();
@@ -136,5 +145,10 @@ class DashboardController extends Controller
         $order->save();
 
         return back()->with('succes', 'Order Complete');
+    }
+
+    public static function numOfDishes()
+    {
+        
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StripePaymentController;
+use App\Http\Controllers\PDFController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,7 @@ use App\Http\Controllers\StripePaymentController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home.front');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -40,7 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::get('admin/dashboard', function () {
     return view('admin.dashboard');
-});
+})->middleware('CheckAdmin');
 
 // Route::get('buying', function () {
 //     return view('home.buying');
@@ -57,71 +58,129 @@ Route::get('admin/dashboard', function () {
 
 // });
 
-
 // Route::post('Cat',[CategoryController::class,'store'])->name('catt');
-Route::group(['prefix' => 'admin/categories', 'as' => 'admin.categories.', 'controller' => CategoryController::class], function () {
-    Route::get('/', 'index')->name('index');
-    Route::get('create', 'create');
-    Route::post('/', 'store');
-    Route::get('{id}/edit', 'edit');
-    Route::put('{id}', 'update');
-    // Route::delete('{id}', 'destroy')->name('destroy');
-    Route::get('{id}', 'destroy');
+Route::group(
+    [
+        'prefix' => 'admin/categories',
+        'as' => 'admin.categories.',
+        'middleware' => 'CheckAdmin',
+        'controller' => CategoryController::class,
+    ],
+    function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create');
+        Route::post('/', 'store');
+        Route::get('{id}/edit', 'edit');
+        Route::put('{id}', 'update');
+        // Route::delete('{id}', 'destroy')->name('destroy');
+        Route::get('{id}', 'destroy');
+    },
+);
+
+Route::middleware(['auth', 'verified'])->group(function () {
+Route::group(
+    [
+        'prefix' => 'admin/products',
+        'as' => 'admin.products.',
+        'middleware' => 'CheckAdmin',
+        'controller' => ProductController::class,
+    ],
+    function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create');
+        Route::post('/', 'store');
+        Route::get('{id}/edit', 'edit');
+        Route::put('{id}', 'update');
+        Route::get('{id}', 'destroy');
+    },
+);
 });
 
-Route::group(['prefix' => 'admin/products', 'as' => 'admin.products.', 'controller' => ProductController::class], function () {
-    Route::get('/', 'index')->name('index');
-    Route::get('create', 'create');
-    Route::post('/', 'store');
-    Route::get('{id}/edit', 'edit');
-    Route::put('{id}', 'update');
-    Route::get('{id}', 'destroy');
+Route::middleware(['auth', 'verified'])->group(function () {
+Route::group(
+    [
+        'prefix' => 'admin/events',
+        'middleware' => 'CheckAdmin',
+        'controller' => EventController::class,
+    ],
+    function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::get('{id}', 'destroy')->name('delete');
+    },
+);
 });
 
-Route::group(['prefix' => 'admin/events', 'controller' => EventController::class], function () {
-    Route::get('/', 'index')->name('index');
-    Route::get('create', 'create')->name('create');
-    Route::post('/', 'store')->name('store');
-    Route::get('{id}/edit', 'edit')->name('edit');
-    Route::put('{id}', 'update')->name('update');
-    Route::get('{id}', 'destroy')->name('delete');
+Route::middleware(['auth', 'verified'])->group(function () {
+Route::group(
+    [
+        'prefix' => 'admin/users',
+        'middleware' => 'CheckAdmin',
+        'controller' => DashboardController::class,
+    ],
+    function () {
+        Route::get('/', 'getUsers')->name('users.get');
+        Route::get('{id}/edit', 'editUsers');
+        Route::get('checkout', 'checkOut');
+        Route::get('{id}', 'deleteOreder');
+        Route::get('{id}/done', 'doneOreder');
+    },
+);
 });
 
-Route::group(['prefix' => 'admin/users', 'controller' => DashboardController::class], function () {
-    Route::get('/', 'getUsers')->name('users.get');
-    Route::get('{id}/edit', 'editUsers');
-    Route::get('checkout', 'checkOut');
-    Route::get('{id}', 'deleteOreder');
-    Route::get('{id}/done', 'doneOreder');
+Route::middleware(['auth', 'verified'])->group(function () {
+Route::group(
+    [
+        'prefix' => 'admin/booking',
+        'as' => 'booking.',
+        'controller' => TableController::class,
+    ],
+    function () {
+        Route::get('/', 'index')->name('index');
+        // Route::get('create', 'create')->name('create');
+        // Route::post('/', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('Edit');
+        Route::put('{id}', 'update')->name('Update');
+        Route::get('{id}', 'destroy')->name('Delete');
+    },
+);
 });
 
-Route::group(['prefix' => 'admin/booking', 'as' => 'booking.', 'controller' => TableController::class], function () {
-    Route::get('/', 'index')->name('index');
-    // Route::get('create', 'create')->name('create');
-    // Route::post('/', 'store')->name('store');
-    Route::get('{id}/edit', 'edit')->name('Edit');
-    Route::put('{id}', 'update')->name('Update');
-    Route::get('{id}', 'destroy')->name('Delete');
-});
-
+Route::middleware(['auth', 'verified'])->group(function () {
 Route::group(['controller' => TableController::class], function () {
     Route::post('book-a-table', 'store')->name('booking');
     // Route::get('create', 'create');
 });
-
-Route::group(['controller' => DashboardController::class], function () {
-    Route::get('basket/{id}', 'AddToCart');
-    Route::get('cart', 'show');
-    // Route::get('confirmation', 'confirm')->name('stripe.post');
 });
 
+Route::group(
+    [
+        'controller' => DashboardController::class,
+    ],
+    function () {
+        Route::get('basket/{id}', 'AddToCart');
+        Route::get('cart', 'show');
+        // Route::get('confirmation', 'confirm')->name('stripe.post');
+    },
+);
 
-Route::controller(StripePaymentController::class)->group(function(){
+Route::middleware(['auth', 'verified'])->group(function () {
+Route::controller(StripePaymentController::class)->group(function () {
     Route::get('stripe', 'stripe');
     Route::post('stripe', 'stripePost')->name('stripe.post');
 });
+});
 
-Route::get('/Basket',[DashboardController::class,'Basket'])->name('Basket');
+Route::view('/oui','oui');
 
-// Route::view('/oui','oui');
-Route::get('/buying1', [DashboardController::class, 'getOrders']);
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/Basket', [DashboardController::class, 'Basket'])->name('Basket');
+    Route::get('/buying1', [DashboardController::class, 'getOrders']);
+    Route::get('generate-pdf/{id}', [PDFController::class, 'generatePDF']);
+    // route::get('Profile/{id}', [DashboardController::class, 'userInfo']);
+    Route::view('Profile','home.profile');
+
+});

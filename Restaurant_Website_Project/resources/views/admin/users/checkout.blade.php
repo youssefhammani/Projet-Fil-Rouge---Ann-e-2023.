@@ -27,7 +27,7 @@
                             <th>Total</th>
                             <th>Status</th>
                             <th>created_at</th>
-                            <th>Invoice</th>
+                            {{-- <th>Invoice</th> --}}
                             <th>Action</th>
                             {{-- <th>Modify permission</th> --}}
                         </tr>
@@ -58,7 +58,7 @@
                                 </td>
                                 @endif
                                 <td>{{ $item->created_at }}</td>
-                                <td><a href="" class="fw-bold text-secondary">Download</a></td>
+                                {{-- <td><a href="" class="fw-bold text-secondary">Download</a></td> --}}
                                 <td>
                                     <a href="{{ url('admin/users/'.$item->id.'/done') }}" class="btn btn-outline-primary">Done</a>
                                     <a href="{{ url('admin/users/'.$item->id) }}" class="btn btn-outline-danger">Delete</a>

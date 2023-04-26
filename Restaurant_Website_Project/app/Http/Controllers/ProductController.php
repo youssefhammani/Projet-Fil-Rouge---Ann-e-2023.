@@ -69,9 +69,8 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/images/products/'), $filename);
-            // $product->setAttribute('image_url', asset('uploads/images/products/' . $filename));
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $image->move('uploads/images/products/', $filename);
             $product->image_url = $filename;
         } else {
             // get the default value from the $attributes array
@@ -147,8 +146,8 @@ class ProductController extends Controller
             }
             // upload the new image
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/images/products'), $filename);
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $image->move('uploads/images/products', $filename);
             $product->image_url = $filename;
 
             // $product->image_url = asset('uploads/images/products/' . $filename);

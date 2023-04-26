@@ -5,7 +5,7 @@
     <section id="menu" class="menu">
         <div class="container" data-aos="fade-up">
 
-            <div class="section-header">
+            <div class="section-header p-5">
                 <h2>Our Menu</h2>
                 <p>Check Our <span>Yummy Menu</span></p>
             </div>
@@ -42,7 +42,7 @@
                         @foreach ($Product_R as $product)
                             <div class="col-lg-4 menu-item" data-category="{{ $product->category_id }}">
                                 <a href="assets/img/menu/menu-item-1.png" class="glightbox"><img
-                                        src="assets/img/menu/menu-item-1.png" class="menu-img img-fluid" alt=""></a>
+                                        src="{{ asset('uploads/images/products/'.$product->image_url) }}" class="menu-img img-fluid" alt=""></a>
                                 <h4>{{ $product->name }}</h4>
                                 <p class="ingredients">
                                     {{ $product->description }}

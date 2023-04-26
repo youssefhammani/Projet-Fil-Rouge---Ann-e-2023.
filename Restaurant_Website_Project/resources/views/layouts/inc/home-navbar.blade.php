@@ -1,12 +1,10 @@
-<!-- ======= Header ======= -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
 </script>
-{{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous"> --}}
 <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
 
-        <a href="index.html" class="logo d-flex align-items-center me-auto me-lg-0">
+        <a href="{{ 'home' }}" class="logo d-flex align-items-center me-auto me-lg-0">
             <!-- Uncomment the line below if you also wish to use an image logo -->
             <!-- <img src="assets/img/logo.png" alt=""> -->
             <h1>Restaurantly<span>.</span></h1>
@@ -14,13 +12,14 @@
 
         <nav id="navbar" class="navbar">
             <ul>
-                <li><a href="/home">Home</a></li>
-                <li><a href="/home#about">About</a></li>
-                <li><a href="/menu">Menu</a></li>
-                <li><a href="/events">Events</a></li>
-                <li><a href="/chefs">Chefs</a></li>
-                <li><a href="/gallery">Gallery</a></li>
-                <li class="dropdown"><a href="#"><span>Sign In Or Sign Up</span> <i
+                <li ><a href="{{ url('/home') }}">Home</a></li>
+                <li><a class="{{ request()->is('home#about') ? 'active' : '' }}" href="{{ url('/home#about') }}">About</a></li>
+                <li><a class="{{ request()->is('menu') ? 'active' : '' }}" href="{{ url('/menu') }}">Menu</a></li>
+                {{-- <li><a href="/events">Events</a></li> --}}
+                <li><a class="{{ request()->is('chefs') ? 'active' : '' }}" href="{{ url('/chefs') }}">Chefs</a></li>
+                <li><a class="{{ request()->is('gallery') ? 'active' : '' }}" href="{{ url('/gallery') }}">Gallery</a></li>
+                <li><a class="{{ request()->is('book-a-table') ? 'active' : '' }}" href="{{ url('/book-a-table') }}">Book a table</a></li>
+                {{-- <li class="dropdown"><a href="#"><span>Sign In Or Sign Up</span> <i
                             class="bi bi-chevron-down dropdown-indicator"></i></a>
                     <ul>
                         <li><a href="/login">Sign IN</a></li>
@@ -44,8 +43,8 @@
                         <li><a href="#">Drop Down 3</a></li>
                         <li><a href="#">Drop Down 4</a></li>
                     </ul>
-                </li>
-                <li><a href="/contact">Contact</a></li>
+                </li> --}}
+                <li><a class="{{ request()->is('contact') ? 'active' : '' }}" href="{{ url('/contact') }}">Contact</a></li>
                 <li><a class="text-primary" href="{{ url('cart') }}"><i class="bi bi-bag"></i></a></li>
                 {{-- <li><button type="submit" class="btn btn-primary m-3" href="{{ url('cart') }}">buying <i class="bi bi-bag"></i></button></li> --}}
             </ul>
@@ -61,18 +60,18 @@
                         <span class="d-none d-lg-inline-flex">{{ Auth::user()->name }}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                        <a href="/Profile" class="dropdown-item">My Profile</a>
+                        <a href="{{ url('Profile/'.Auth::user()->id) }}" class="dropdown-item">My Profile</a>
                         @auth
                             @if (auth()->user()->role == 'admin')
                                 <a href="{{ url('admin/dashboard') }}" class="dropdown-item">dashboard</a>
                             @endif
                         @endauth
                         <a href="{{ url('/buying1') }}" class="dropdown-item">order tracking</a>
-                        <a href="" class="dropdown-item"
+                        <a href="{{ route('logout') }}" class="dropdown-item"
                             onclick="event.preventDefault();
     document.getElementById('logout-form').submit();">Log
                             Out</a>
-                        <form id="logout-form" action="" method="POST" class="d-none">
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
                     </div>
@@ -84,4 +83,5 @@
             @endif
         @endauth
     </div>
-</header><!-- End Header -->
+    
+</header>

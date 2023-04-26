@@ -38,7 +38,7 @@
                 <!-- Shopping cart table -->
                 <div class="card">
                     <div class="card-header ">
-                        <h2>Cart</h2>
+                        <h2 class="text-center">Orders</h2>
                     </div>
                     <div class="card-body my-5">
                         <div class="table-responsive">
@@ -99,10 +99,10 @@
 
                         <div class="d-flex flex-wrap justify-content-between align-items-center pb-4">
                             <div class="d-flex">
-                                <div class="text-right mt-4 mr-5">
+                                {{-- <div class="text-right mt-4 mr-5">
                                     <label class="text-muted font-weight-normal m-0">Shipping</label>
                                     <div class="text-large"><strong>$20</strong></div>
-                                </div>
+                                </div> --}}
                                 <div class="text-right mt-4">
                                     <label class="text-muted font-weight-normal m-0">Total price</label>
 
@@ -112,8 +112,8 @@
                         </div>
 
                         <div class="float-right">
-                            <a href="/Shop" type="submit" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to
-                                shopping</a>
+                            {{-- <a href="/Shop" type="submit" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to
+                                shopping</a> --}}
                             <button type="submit" class="btn btn-lg btn-primary mt-2">Checkout</button>
                         </div>
 
@@ -122,7 +122,7 @@
             </form>
         </div>
 
-        <div class="modal fade mt-5" id="modal-C">
+        {{-- <div class="modal fade mt-5" id="modal-C">
             <div class="modal-dialog" style="margin-top: 7cm">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -137,9 +137,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        @if (session('display_modal'))
+        {{-- @if (session('display_modal'))
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -157,44 +157,43 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
-            <script>
+            {{-- <script>
                 $('#myModal').modal('show');
-            </script>
+            </script> --}}
 
             <?php session()->forget('display_modal'); ?>
-        @endif
+            {{-- @endif --}}
 
         <script>
-            let TotalP = 0;
+            let TotalPrice = 0;
 
             function test(key) {
                 console.log(key);
                 let price = parseInt(document.getElementById('test1_' + key).textContent.replace("$", ""));
                 // let sold = parseInt(document.getElementById('test2_' + key).textContent.replace("$", ""));
                 let quntite = parseInt(document.getElementById('test_' + key).value);
-                let oldTotal = parseInt(document.getElementById('total_' + key).textContent.replace("$",
-                    ""));
+                let oldTotal = parseInt(document.getElementById('total_' + key).textContent.replace("$", ""));
                 let total = price * quntite;
 
-                TotalP = TotalP - oldTotal + total;
+                TotalPrice =  total;
                 document.getElementById('total_' + key).textContent = "$" + total;
-                document.getElementById('Prix').textContent = "$" + TotalP;
+                document.getElementById('Prix').textContent = "$" + TotalPrice;
             }
             
-            function checkCheckbox() {
-                const updateBtns = document.querySelectorAll('.updateBtn');
-                let count = 0;
-                let chheck = parseInt(document.getElementById('Prix').textContent.replace("$", ""));
-                console.log(chheck);
-                if (chheck >= 1) {
-                    sessionStorage.setItem('TotalP', chheck);
-                    window.location.href = "stripe";
-                } else if (chheck <= 0) {
-                    alert('Please select input element.');
-                }
-            }
+            // function checkCheckbox() {
+            //     const updateBtns = document.querySelectorAll('.updateBtn');
+            //     let count = 0;
+            //     let chheck = parseInt(document.getElementById('Prix').textContent.replace("$", ""));
+            //     console.log(chheck);
+            //     if (chheck >= 1) {
+            //         // sessionStorage.setItem('TotalP', chheck);
+            //         // window.location.href = "stripe";
+            //     } else if (chheck <= 0) {
+            //         alert('Please select input element.');
+            //     }
+            // }
             
         </script>
         {{-- </section> --}}
